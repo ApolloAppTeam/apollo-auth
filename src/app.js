@@ -80,6 +80,9 @@ app.use(session({
     },
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // ---------- Set up router ---------------------
 const router = require('./router.js');
 
