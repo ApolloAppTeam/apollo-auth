@@ -6,7 +6,7 @@ mongoose.Promise = global.Promise;  // Use default promise library
 let UserModel = {};
 
 const UserSchema = new mongoose.Schema({
-    // Define whatever fields we want here
+  // Define whatever fields we want here
 });
 
 // passport-local-mongoose automatically adds username, hash, and salt fields

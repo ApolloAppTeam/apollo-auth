@@ -13,25 +13,25 @@ const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/apollo';
 
 // ---------- Connect to database ---------------
 mongoose.connect(dbURL, (error) => {
-    if (error) {
-        console.log('Could not connect to database');
-        throw error;  // TODO: May want to do something more intelligent here
-    }
+  if (error) {
+    console.log('Could not connect to database');
+    throw error;  // TODO: May want to do something more intelligent here
+  }
 });
 
 // ---------- Hook up Redis ---------------------
 // Port 6379 is the redis default
 let redisURL = {
-    hostname: 'localhost',
-    port: 6379,
+  hostname: 'localhost',
+  port: 6379,
 };
 
 let redisPassword;
 
 // This is fairly specific to Heroku
 if (process.env.REDISCLOUD_URL) {
-    redisURL = url.parse(process.env.REDISCLOUD_URL);
-    redisPassword = redisURL.auth.split(':')[1];
+  redisURL = url.parse(process.env.REDISCLOUD_URL);
+  redisPassword = redisURL.auth.split(':')[1];
 }
 
 // ---------- Configure passport ----------
@@ -52,23 +52,23 @@ app.use(compression());       // To reduce size of messages we send to client
 // Parse only urlencoded bodies and populate req.body
 app.use(bodyParser.json()); // Needed for AJAX libs like superagent and axios
 app.use(bodyParser.urlencoded({
-    extended: true,             // Parse using the qs library
+  extended: true,             // Parse using the qs library
 }));
 app.use(cookieParser());
 app.use(session({
-    key: 'sessionid',           // Name of cookie
-    store: new RedisStore({     // Use Redis as our memory store for session
-        host: redisURL.hostname,
-        port: redisURL.port,
-        pass: redisPassword,
-    }),
-    secret: 'Cool tapes',       // TODO: Look into rotating secrets
-    resave: true,               // Refresh key to keep it active - may have repercussions in production
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,         // Disallow JS access to cookies
-                                // TODO: look into maxAge & secure properties
-    },
+  key: 'sessionid',           // Name of cookie
+  store: new RedisStore({     // Use Redis as our memory store for session
+    host: redisURL.hostname,
+    port: redisURL.port,
+    pass: redisPassword,
+  }),
+  secret: 'Cool tapes',       // TODO: Look into rotating secrets
+  resave: true,               // Refresh key to keep it active - may have repercussions in production
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,         // Disallow JS access to cookies
+                            // TODO: look into maxAge & secure properties
+  },
 }));
 
 app.use(passport.initialize());
@@ -82,9 +82,9 @@ router(app);
 
 // ---------- Start listening for requests ------
 app.listen(port, (error) => {
-    if (error) {
-        throw error;  // TODO: May want to do something more intelligent here
-    }
+  if (error) {
+    throw error;  // TODO: May want to do something more intelligent here
+  }
 
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
