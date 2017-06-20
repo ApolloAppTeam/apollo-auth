@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
@@ -8,7 +7,6 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const url = require('url');
 const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/apollo';
@@ -38,35 +36,28 @@ if (process.env.REDISCLOUD_URL) {
 
 // ---------- Configure passport ----------
 // Could (probably should) also put all this in its own file
-
-// Passport needs these to manage authentication across requests
-passport.serializeUser((user, callback) => {
-    // callback(null, someUserID);
-});
-
-passport.deserializeUser((id, callback) => {
-    // callback(errFromDeserializationProcess, someUser);
-});
+const User = require('./models/UserModel.js');
 
 // Tell passport to use the local (username & password) auth strategy
-passport.use(new localStrategy(
-    (username, password, callback) => {
-        // Perform checks 
-    }));
+passport.use(User.UserModel.createStrategy());
+
+// Passport needs these to manage authentication across requests
+passport.serializeUser(User.UserModel.serializeUser());
+passport.deserializeUser(User.UserModel.deserializeUser());
 
 // ---------- Setup express & router ------------
 const app = express();
 app.disable('x-powered-by');  // disable the x-powered-by header so we don't leak our architecture
 app.use(compression());       // To reduce size of messages we send to client
 // Parse only urlencoded bodies and populate req.body
-//app.use(bodyParser.json()); // Needed for certain request libs (e.g. superagent), enable if issues
+app.use(bodyParser.json()); // Needed for AJAX libs like superagent and axios
 app.use(bodyParser.urlencoded({
     extended: true,             // Parse using the qs library
 }));
 app.use(cookieParser());
 app.use(session({
     key: 'sessionid',           // Name of cookie
-        store: new RedisStore({ // Use Redis as our memory store for session
+    store: new RedisStore({     // Use Redis as our memory store for session
         host: redisURL.hostname,
         port: redisURL.port,
         pass: redisPassword,

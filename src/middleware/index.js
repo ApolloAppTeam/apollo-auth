@@ -1,3 +1,6 @@
+module.exports.passport = require('passport');
+module.exports.validation = require('./Validation.js');
+
 /**
  * Generic middleware function
  * @param  {Request}  req  The HTTP request object

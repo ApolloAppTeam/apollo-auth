@@ -1,7 +1,7 @@
 // Controllers tells us what JS (that we right) to run on a given request
 const controllers = require('./controllers');
 // Middleware tells us what JS to run before sending a request to a controller
-const middleware = require('./middleware.js');
+const middleware = require('./middleware');
 
 /**
  * Sets up router
@@ -9,8 +9,17 @@ const middleware = require('./middleware.js');
  */
 const router = (app) => {
 
-  //app.get('/', SomeDefault)
-  //app.get('*', error);
+    app.post('/signup', controllers.User.signup);
+    app.post('/signin', middleware.passport.authenticate('local'), controllers.User.signin);
+    app.get('/signout', controllers.User.signout);
+    app.post('/changePassword',
+            middleware.passport.authenticate('local'),
+            controllers.User.changePassword);
+    // changePassword authenticates for PoC testing purposes
+    // middleware.validation.isAuth should be used once we have a persistent client
+
+    //app.get('/', SomeDefault)
+    //app.get('*', error);
 };
 
 module.exports = router;
