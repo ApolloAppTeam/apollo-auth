@@ -56,7 +56,7 @@ const changePassword = (_request, _response) => {
   const request = _request;
   const response = _response;
 
-  if (!request.body.password || !request.body.passwordConfirm) {
+  if (!request.body.newPassword || !request.body.newPasswordConfirm) {
     return response.status(400).json({ error: 'Not all fields supplied' });
   }
 

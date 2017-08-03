@@ -74,6 +74,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// ---------- Allow CORS ------------------------
+const middleware = require('./middleware/');
+app.use(middleware.allowCORS);
+
 // ---------- Set up router ---------------------
 const router = require('./router.js');
 
