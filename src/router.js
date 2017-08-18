@@ -10,7 +10,7 @@ const middleware = require('./middleware');
 const router = (app) => {
 
   app.post('/signup', controllers.User.signup);
-  app.post('/signin', middleware.passport.authenticate('local'), controllers.User.signin);
+  app.post('/signin', middleware.validation.authorize, controllers.User.signin);
   app.get('/signout', controllers.User.signout);
   app.post('/changePassword',
           middleware.passport.authenticate('local'),
